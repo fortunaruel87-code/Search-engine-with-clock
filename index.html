@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Digital Clock</title>
+
+<style>
+
+/* =========================================
+   BASIC
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+
+    background: #000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    font-family: Arial, sans-serif;
+
+    transition: background 0.4s ease;
+}
+
+
+/* DARK OVERLAY */
+
+body::before {
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.18);
+
+    pointer-events: none;
+
+    z-index: 0;
+}
+
+
+/* =========================================
+   CLOCK CONTAINER
+========================================= */
+
+.container {
+
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 18px;
+
+    margin-top: 55px;
+}
+
+.clock-title {
+
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+
+    text-shadow: 0 2px 8px rgba(0,0,0,0.45);
+}
+
+.clock-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 35px;
+}
+
+
+/* =========================================
+   DIGITAL CLOCK
+========================================= */
+
+.clock {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+/* DIGIT */
+
+.digit {
+
+    position: relative;
+
+    width: 90px;
+
+    height: 165px;
+}
+
+
+/* SEGMENTS */
+
+.segment {
+
+    position: absolute;
+
+    background: #ffffff;
+
+    display: none;
+
+    transition:
+        background 0.3s ease,
+        filter 0.3s ease;
+}
+
+
+/* =========================================
+   HORIZONTAL SEGMENTS
+========================================= */
+
+.a,
+.d,
+.g {
+
+    width: 68px;
+
+    height: 22px;
+
+    left: 11px;
+
+    clip-path: polygon(
+        11px 0,
+        57px 0,
+        68px 11px,
+        57px 22px,
+        11px 22px,
+        0 11px
+    );
+}
+
+.a {
+    top: 0;
+}
+
+.g {
+    top: 71px;
+}
+
+.d {
+    bottom: 0;
+}
+
+
+/* =========================================
+   VERTICAL SEGMENTS
+========================================= */
+
+.b,
+.c,
+.e,
+.f {
+
+    width: 22px;
+
+    height: 71px;
+
+    clip-path: polygon(
+        11px 0,
+        22px 11px,
+        22px 60px,
+        11px 71px,
+        0 60px,
+        0 11px
+    );
+}
+
+.f {
+    left: 0;
+
+    top: 8px;
+}
+
+.b {
+    right: 0;
+
+    top: 8px;
+}
+
+.e {
+    left: 0;
+
+    bottom: 8px;
+}
+
+.c {
+    right: 0;
+
+    bottom: 8px;
+}
+
+
+/* =========================================
+   DIGIT 0
+========================================= */
+
+.digit[data-number="0"] .a,
+.digit[data-number="0"] .b,
+.digit[data-number="0"] .c,
+.digit[data-number="0"] .d,
+.digit[data-number="0"] .e,
+.digit[data-number="0"] .f,
+
+/* 1 */
+
+.digit[data-number="1"] .b,
+.digit[data-number="1"] .c,
+
+/* 2 */
+
+.digit[data-number="2"] .a,
+.digit[data-number="2"] .b,
+.digit[data-number="2"] .g,
+.digit[data-number="2"] .e,
+.digit[data-number="2"] .d,
+
+/* 3 */
+
+.digit[data-number="3"] .a,
+.digit[data-number="3"] .b,
+.digit[data-number="3"] .g,
+.digit[data-number="3"] .c,
+.digit[data-number="3"] .d,
+
+/* 4 */
+
+.digit[data-number="4"] .f,
+.digit[data-number="4"] .g,
+.digit[data-number="4"] .b,
+.digit[data-number="4"] .c,
+
+/* 5 */
+
+.digit[data-number="5"] .a,
+.digit[data-number="5"] .f,
+.digit[data-number="5"] .g,
+.digit[data-number="5"] .c,
+.digit[data-number="5"] .d,
+
+/* 6 */
+
+.digit[data-number="6"] .a,
+.digit[data-number="6"] .f,
+.digit[data-number="6"] .g,
+.digit[data-number="6"] .e,
+.digit[data-number="6"] .c,
+.digit[data-number="6"] .d,
+
+/* 7 */
+
+.digit[data-number="7"] .a,
+.digit[data-number="7"] .b,
+.digit[data-number="7"] .c,
+
+/* 8 */
+
+.digit[data-number="8"] .a,
+.digit[data-number="8"] .b,
+.digit[data-number="8"] .c,
+.digit[data-number="8"] .d,
+.digit[data-number="8"] .e,
+.digit[data-number="8"] .f,
+.digit[data-number="8"] .g,
+
+/* 9 */
+
+.digit[data-number="9"] .a,
+.digit[data-number="9"] .b,
+.digit[data-number="9"] .c,
+.digit[data-number="9"] .d,
+.digit[data-number="9"] .f,
+.digit[data-number="9"] .g {
+
+    display: block;
+}
+
+
+/* =========================================
+   COLON
+========================================= */
+
+.colon {
+
+    width: 20px;
+
+    height: 165px;
+
+    position: relative;
+}
+
+.colon::before,
+.colon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 3px;
+
+    width: 17px;
+
+    height: 17px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    transition: background 0.3s ease;
+}
+
+.colon::before {
+    top: 48px;
+}
+
+.colon::after {
+    bottom: 48px;
+}
+
+
+/* =========================================
+   12 / 24 HR BUTTONS
+========================================= */
+
+.controls {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    align-items: center;
+}
+
+.format-button {
+
+    width: 85px;
+
+    padding: 9px 8px;
+
+    background: rgba(20,20,20,0.8);
+
+    color: white;
+
+    border: 1px solid rgba(255,255,255,0.3);
+
+    border-radius: 7px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.format-button:hover {
+
+    background: rgba(255,255,255,0.25);
+}
+
+.format-button.active {
+
+    background: white;
+
+    color: black;
+}
+
+
+/* AM PM */
+
+.ampm {
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    min-height: 20px;
+}
+
+
+/* =========================================
+   THEME BUTTON
+========================================= */
+
+.about-logo-button {
+    position: fixed;
+    top: 18px;
+    right: 82px;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 1px solid #444;
+    border-radius: 50%;
+    background: #080808;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.about-logo-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-logo-button:hover {
+    transform: scale(1.05);
+}
+
+.theme-toggle {
+
+    position: fixed;
+
+    right: 25px;
+
+    top: 25px;
+
+    width: 48px;
+
+    height: 48px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    border: 1px solid rgba(255,255,255,0.3);
+
+    background: rgba(20,20,20,0.85);
+
+    cursor: pointer;
+
+    z-index: 100;
+
+    transition: 0.2s;
+
+    overflow: hidden;
+}
+
+.theme-toggle:hover {
+
+    transform: scale(1.08);
+
+    background: rgba(255,255,255,0.2);
+}
+
+.theme-toggle img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
+/* =========================================
+   THEME POPUP
+========================================= */
+
+.theme-popup {
+
+    position: fixed;
+
+    right: 25px;
+
+    top: 82px;
+
+    width: 245px;
+
+    padding: 16px;
+
+    background: rgba(15,15,15,0.96);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    border-radius: 14px;
+
+    backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.6);
+
+    color: white;
+
+    z-index: 99;
+
+    opacity: 0;
+
+    transform:
+        translateY(-10px)
+        scale(0.95);
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* OPEN */
+
+.theme-popup.show {
+
+    opacity: 1;
+
+    transform:
+        translateY(0)
+        scale(1);
+
+    pointer-events: auto;
+}
+
+
+/* =========================================
+   POPUP HEADER
+========================================= */
+
+.popup-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    margin-bottom: 14px;
+}
+
+.close-theme {
+
+    width: 28px;
+
+    height: 28px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #292929;
+
+    color: white;
+
+    font-size: 20px;
+
+    line-height: 20px;
+
+    cursor: pointer;
+}
+
+.close-theme:hover {
+
+    background: #444;
+}
+
+
+/* =========================================
+   THEME GRID
+========================================= */
+
+.theme-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+}
+
+.theme {
+
+    height: 45px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.25);
+
+    border-radius: 8px;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.theme:hover {
+
+    transform: scale(1.04);
+
+    border-color: white;
+}
+
+
+/* THEMES */
+
+.black {
+    background: #000;
+}
+
+.ocean {
+
+    background:
+        linear-gradient(
+            135deg,
+            #001f3f,
+            #0074D9
+        );
+}
+
+.purple {
+
+    background:
+        linear-gradient(
+            135deg,
+            #16002b,
+            #7b2cff
+        );
+}
+
+.neon {
+
+    background:
+        linear-gradient(
+            135deg,
+            #001a12,
+            #00ff88
+        );
+}
+
+.sunset {
+
+    background:
+        linear-gradient(
+            135deg,
+            #ff512f,
+            #dd2476
+        );
+}
+
+.night {
+
+    background:
+        linear-gradient(
+            135deg,
+            #020024,
+            #090979,
+            #00d4ff
+        );
+}
+
+
+/* =========================================
+   DIVIDER
+========================================= */
+
+.theme-popup hr {
+
+    border: none;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.15);
+
+    margin: 15px 0;
+}
+
+
+/* =========================================
+   BACKGROUND IMAGE BUTTON
+========================================= */
+
+.popup-button {
+
+    width: 100%;
+
+    height: 40px;
+
+    border-radius: 8px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.25);
+
+    background: #222;
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 13px;
+}
+
+.popup-button:hover {
+
+    background: #333;
+}
+
+
+/* =========================================
+   COLOR OPTIONS
+========================================= */
+
+.color-option {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 12px;
+
+    font-size: 13px;
+}
+
+.color-option input {
+
+    width: 42px;
+
+    height: 28px;
+
+    border: none;
+
+    padding: 0;
+
+    background: transparent;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   GOOGLE SEARCH BAR
+========================================= */
+
+.google-search {
+    width: min(700px, 82vw);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 3;
+    margin-top: 8px;
+}
+
+.google-search input {
+    flex: 1;
+    height: 46px;
+    padding: 0 18px;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 24px;
+    outline: none;
+    background: rgba(15,15,15,0.82);
+    color: white;
+    font-size: 16px;
+    backdrop-filter: blur(8px);
+}
+
+.google-search input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.google-search input:focus {
+    border-color: white;
+    box-shadow: 0 0 12px rgba(255,255,255,0.15);
+}
+
+.google-search button {
+    height: 46px;
+    padding: 0 20px;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 24px;
+    background: white;
+    color: black;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.google-search button:hover {
+    transform: scale(1.04);
+    background: #eeeeee;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .container {
+
+        transform: scale(0.75);
+    }
+}
+
+@media (max-width: 700px) {
+
+    .container {
+
+        transform: scale(0.55);
+    }
+
+    .clock-title {
+        font-size: 24px;
+    }
+
+    .clock-row {
+        gap: 25px;
+    }
+
+    .about-logo-button {
+        width: 42px;
+        height: 42px;
+        right: 70px;
+        top: 12px;
+    }
+
+    .theme-toggle {
+        width: 42px;
+        height: 42px;
+        right: 15px;
+        top: 12px;
+    }
+
+    .theme-popup {
+
+        right: 15px;
+
+        top: 70px;
+    }
+
+    .google-search {
+        width: 88vw;
+        margin-top: 4px;
+    }
+
+    .google-search input,
+    .google-search button {
+        height: 42px;
+    }
+}
+
+/* =========================================
+   ABOUT THIS WEBSITE
+========================================= */
+
+.about-button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.08);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.about-button:hover {
+    background: rgba(255,255,255,0.16);
+}
+
+.about-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,0.72);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.about-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.about-card {
+    width: min(520px, 92vw);
+    max-height: 85vh;
+    overflow-y: auto;
+    background: #0d0d0d;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 18px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.7);
+}
+
+.about-logo {
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border-radius: 22px;
+    display: block;
+    margin: 0 auto 16px;
+}
+
+.about-card h2 {
+    margin: 0 0 12px;
+    font-size: 24px;
+}
+
+.about-card h3 {
+    margin: 20px 0 8px;
+    text-align: left;
+}
+
+.about-card p,
+.about-card li {
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    text-align: left;
+}
+
+.about-close {
+    margin-top: 18px;
+    padding: 10px 22px;
+    border: 0;
+    border-radius: 10px;
+    background: white;
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ======================================
+     DIGITAL CLOCK
+======================================= -->
+
+<div class="container">
+
+    <h1 class="clock-title">Digital Clock by Fortune</h1>
+
+    <div class="clock-row">
+
+    <div class="clock">
+
